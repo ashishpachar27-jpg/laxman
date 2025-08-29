@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Free Classes – Maths & Physics Tutoring</title>
+    <meta
+      name="description"
+      content="Interactive website for Demo Free Classes showcasing Ashish's expert tutoring in mathematics and physics across IB, IGCSE, CBSE, GCSE, ISC, A‑Level and AP boards. Includes biography, teaching philosophy, courses offered, class formats, parent reviews and contact details."
+    />
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom styles for review slider and simple animations */
+      .fade-enter {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .fade-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      /* Decorative physics animations */
+      .projectile {
+        position: fixed;
+        /* Start the projectile lower down so it becomes visible across sections */
+        top: 15vh;
+        /* Start slightly off-screen so trajectory enters view quickly */
+        left: -20px;
+        /* Increase size further and brightness of the projectile for greater visibility */
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 204, 0, 0.9); /* brighter yellow ball */
+        pointer-events: none;
+        /* Ensure projectile renders above moving formulas but below main content */
+        z-index: 1;
+        animation: moveBall 14s linear infinite;
+      }
+
+      @keyframes moveBall {
+        0% {
+          transform: translateX(0) translateY(0);
+        }
+        25% {
+          transform: translateX(25vw) translateY(-15vh);
+        }
+        50% {
+          transform: translateX(50vw) translateY(0);
+        }
+        75% {
+          transform: translateX(75vw) translateY(15vh);
+        }
+        100% {
+          transform: translateX(100vw) translateY(0);
+        }
+      }
+
+      .pendulum {
+        position: fixed;
+        /* Position near the centre-left so the bob is fully visible */
+        top: 10vh;
+        right: 5vw;
+        width: 4px;
+        height: 350px;
+        /* String colour */
+        background: rgba(255, 255, 255, 0.6);
+        pointer-events: none;
+        z-index: 1;
+        transform-origin: top;
+        animation: swing 8s ease-in-out infinite;
+      }
+      .pendulum::after {
+        content: "";
+        position: absolute;
+        top: 310px;
+        left: -12px;
+        /* Larger bob with bright pink colour */
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(236, 72, 153, 0.95);
+      }
+
+      /* Energy equations text overlay */
+      .energy-equations {
+        position: fixed;
+        bottom: 12vh;
+        left: 5vw;
+        z-index: 1;
+        /* Brighter colour for better contrast on the gradient */
+        color: rgba(255, 255, 255, 0.95);
+        /* Larger font to make the energy equations prominent */
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+
+      /* Dynamic mathematics background elements */
+      .math-movement span {
+        position: fixed;
+        white-space: nowrap;
+        /* Dramatically increase font size for high visibility */
+        font-size: 3.5rem;
+        font-weight: 700;
+        /* High opacity white text ensures formulas stand out over gradients */
+        /* Higher opacity so formulas are more visible */
+        /* Increase opacity further so formulas stand out clearly */
+        color: rgba(255, 255, 255, 0.8);
+        /* More pronounced text shadow to stand out on gradient backgrounds */
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        /* Apply blend mode to integrate smoothly with gradients */
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        /* Keep formulas in a low z-index layer behind main content */
+        z-index: 0;
+        animation: floatAcross linear infinite;
+      }
+      /* Each span can have different animation duration and starting position via nth-child */
+      .math-movement span:nth-child(1) {
+        top: 10vh;
+        left: -30vw;
+        animation-duration: 50s;
+      }
+      .math-movement span:nth-child(2) {
+        top: 35vh;
+        left: -50vw;
+        animation-duration: 70s;
+      }
+      .math-movement span:nth-child(3) {
+        top: 60vh;
+        left: -20vw;
+        animation-duration: 60s;
+      }
+      .math-movement span:nth-child(4) {
+        top: 85vh;
+        left: -40vw;
+        animation-duration: 80s;
+      }
+      .math-movement span:nth-child(5) {
+        top: 25vh;
+        left: -60vw;
+        animation-duration: 90s;
+      }
+      .math-movement span:nth-child(6) {
+        top: 75vh;
+        left: -70vw;
+        animation-duration: 55s;
+      }
+      .math-movement span:nth-child(7) {
+        top: 50vh;
+        left: -80vw;
+        animation-duration: 65s;
+      }
+      @keyframes floatAcross {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(200vw);
+        }
+      }
+      @keyframes swing {
+        0% {
+          transform: rotate(-20deg);
+        }
+        50% {
+          transform: rotate(20deg);
+        }
+        100% {
+          transform: rotate(-20deg);
+        }
+      }
+
+      /* Spring animation for added physics feel */
+      .spring {
+        position: fixed;
+        /* Place near left side of the hero area */
+        bottom: 15vh;
+        left: 5vw;
+        width: 14px;
+        height: 150px;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.6),
+          rgba(255, 255, 255, 0.6) 4px,
+          rgba(255, 255, 255, 0.3) 4px,
+          rgba(255, 255, 255, 0.3) 8px
+        );
+        border-radius: 7px;
+        z-index: 1;
+        animation: springOsc 4s ease-in-out infinite;
+        pointer-events: none;
+      }
+      @keyframes springOsc {
+        0% {
+          transform: scaleY(1);
+        }
+        50% {
+          transform: scaleY(0.8);
+        }
+        100% {
+          transform: scaleY(1);
+        }
+      }
+
+      /* Second spring variation on the right side */
+      .spring-right {
+        /* Position near the right side of the hero area */
+        left: auto;
+        right: 5vw;
+        top: 50vh;
+        /* Slightly shorter and thinner for contrast */
+        width: 12px;
+        height: 120px;
+        /* Use a different opacity for the gradients */
+        background-image: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.7),
+          rgba(255, 255, 255, 0.7) 4px,
+          rgba(255, 255, 255, 0.4) 4px,
+          rgba(255, 255, 255, 0.4) 8px
+        );
+        border-radius: 6px;
+        animation-duration: 5s;
+      }
+
+      /* Sticky call‑to‑action button */
+      #sticky-cta {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.75rem 1.25rem;
+        background-color: #6B46C1; /* purple-700 */
+        color: #ffffff;
+        border-radius: 9999px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        font-weight: 600;
+        z-index: 50;
+        transition: background-color 0.3s ease;
+      }
+      #sticky-cta:hover {
+        background-color: #553C9A; /* darker purple */
+      }
+
+      /* Timeline animation */
+      .timeline-item {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      .timeline-item.visible {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      /* Hide any leftover decorative animations */
+      .pendulum,
+      .energy-equations,
+      .projectile,
+      .spring,
+      .spring-right,
+      .math-movement {
+        display: none !important;
+      }
+    </style>
+    <!-- Override to hide decorative animations that were previously used -->
+    <style>
+      /* Hide any leftover decorative elements (projectile, pendulum, energy equations, springs, math formulas) */
+      .projectile,
+      .pendulum,
+      .energy-equations,
+      .math-movement,
+      .spring {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Background animations removed for clarity -->
+    <!-- Decorative elements removed as per latest update -->
+    <!-- Navigation -->
+    <header class="bg-white shadow sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <img src="assets/logo.png" alt="Demo Free Classes logo" class="w-10 h-10" />
+          <h1 class="text-2xl font-bold text-purple-600">Demo Free Classes</h1>
+        </div>
+        <nav class="hidden md:flex space-x-6 text-sm font-medium">
+          <a href="#about" class="hover:text-purple-600">About</a>
+          <a href="#courses" class="hover:text-purple-600">Courses</a>
+          <a href="#formats" class="hover:text-purple-600">Class Formats</a>
+          <a href="#reviews" class="hover:text-purple-600">Reviews</a>
+          <a href="#resources" class="hover:text-purple-600">Resources</a>
+          <a href="#contact" class="hover:text-purple-600">Contact</a>
+        </nav>
+        <a
+          href="#contact"
+          class="md:hidden inline-block px-4 py-2 rounded bg-purple-600 text-white text-sm"
+          >Menu</a
+        >
+      </div>
+    </header>
+
+    <!-- Hero section -->
+    <section class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-16" id="home">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-8 md:mb-0">
+          <h2 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
+            Expert Maths & Physics Tutoring for Students Worldwide
+          </h2>
+          <p class="text-lg mb-4">
+            Personalized, one‑on‑one coaching for IB, IGCSE, CBSE, GCSE, ISC,
+            A‑Level & AP learners. Build conceptual strength and boost your
+            confidence with Ashish's proven teaching methods.
+          </p>
+          <p class="mb-6">
+            <a href="#about" class="underline text-white text-base">Learn more about Ashish</a>
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Primary CTA: Book Free Demo -->
+            <a
+              href="#contact"
+              class="bg-white text-purple-700 font-semibold px-6 py-3 rounded shadow hover:bg-gray-100 transition text-center"
+              >Book Free Demo</a
+            >
+            <!-- Secondary CTA: Parents Reviews -->
+            <a
+              href="#reviews"
+              class="border border-white font-semibold px-6 py-3 rounded hover:bg-white hover:text-purple-700 transition text-center"
+              >Parents Reviews</a
+            >
+            <!-- WhatsApp CTA with phone number above -->
+            <div class="flex flex-col items-center text-center">
+              <span class="text-xs text-white mb-1">+91&nbsp;86849&nbsp;01516</span>
+              <a
+                href="https://wa.me/918684901516"
+                class="bg-green-500 text-white font-semibold px-6 py-3 rounded shadow hover:bg-green-600 transition text-center"
+                target="_blank"
+                rel="noopener noreferrer"
+                >WhatsApp Me</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="md:w-1/2 flex justify-center">
+        <div class="md:w-1/2 flex flex-col items-center md:items-start">
+          <img
+            src="assets/photo.jpg"
+            alt="Tutor Portrait"
+            class="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover shadow-lg"
+          />
+          <!-- Link to the TeacherOn profile under the portrait -->
+          <!-- Emphasise the TeacherOn link by using a bolder background and border so it's clearly visible -->
+          <a
+            href="https://www.teacheron.com/tutor/4Sih"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-block px-6 py-3 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:text-purple-800 font-semibold shadow transition"
+            >View my TeacherOn profile on TeacherOn</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Games & Simulations Section -->
+    <section id="interactives" class="py-16 bg-gray-50 hidden">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">Interactive Games &amp; Simulations</h3>
+        <p class="text-center mb-8 text-gray-700">Explore our engaging games and simulations to deepen your understanding of physics and mathematics concepts.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <!-- Math Interactive: Analog Clock -->
+          <a href="analog-clock.html" class="flex flex-col items-center justify-center p-6 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:shadow-lg transition">
+            <span class="text-6xl">🕰️</span>
+            <span class="mt-4 text-xl font-semibold text-center">Analog Clock Lab</span>
+            <span class="mt-1 text-sm text-center">Interactive clock with teach &amp; practice modes</span>
+          </a>
+          <!-- Math Interactive: Area Under Curve -->
+          <a href="area-curve.html" class="flex flex-col items-center justify-center p-6 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:shadow-lg transition">
+            <span class="text-6xl">📈</span>
+            <span class="mt-4 text-xl font-semibold text-center">Area Under Curve</span>
+            <span class="mt-1 text-sm text-center">Dynamic Riemann sum &amp; integral exploration</span>
+          </a>
+          <!-- Physics Interactive: Relativity Simulation -->
+          <a href="relativity.html" class="flex flex-col items-center justify-center p-6 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:shadow-lg transition">
+            <span class="text-6xl">⌛</span>
+            <span class="mt-4 text-xl font-semibold text-center">Relativity Simulation</span>
+            <span class="mt-1 text-sm text-center">Interactive Minkowski space‑time diagram</span>
+          </a>
+          <!-- Physics Game: Atomic Arcade -->
+          <a href="atomic.html" class="flex flex-col items-center justify-center p-6 rounded-lg border-2 border-green-600 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-lg transition">
+            <span class="text-6xl">🎮</span>
+            <span class="mt-4 text-xl font-semibold text-center">Atomic Arcade</span>
+            <span class="mt-1 text-sm text-center">Playful exploration of atomic structure</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="journey" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          My Journey
+        </h3>
+        <div class="relative max-w-4xl mx-auto">
+          <!-- Vertical line (subtle) -->
+          <!-- Lighten the timeline line and soften its color for a more modern look -->
+          <div class="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full border-l-2 border-purple-200 opacity-40"></div>
+          <div class="space-y-12 mt-4">
+            <!-- Timeline item 1 -->
+            <div class="timeline-item flex items-start md:items-center" >
+              <div class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white flex-shrink-0">
+                2019
+              </div>
+              <div class="ml-4 md:ml-8 md:w-1/2">
+                <h4 class="text-lg font-semibold">Completed M.Sc. Physics</h4>
+                <p class="text-sm text-gray-600">Graduated from Kurukshetra University with a master’s degree in Physics, laying a strong foundation in the subject.</p>
+              </div>
+            </div>
+            <!-- Timeline item 2 -->
+            <div class="timeline-item flex items-start md:items-center">
+              <div class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white flex-shrink-0">
+                2021
+              </div>
+              <div class="ml-4 md:ml-8 md:w-1/2">
+                <h4 class="text-lg font-semibold">Joined Allen Career Institute</h4>
+                <p class="text-sm text-gray-600">Began teaching Physics and Mathematics to competitive exam aspirants, honing my pedagogy and mentoring skills.</p>
+              </div>
+            </div>
+            <!-- Timeline item 3 -->
+            <div class="timeline-item flex items-start md:items-center">
+              <div class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white flex-shrink-0">
+                2023
+              </div>
+              <div class="ml-4 md:ml-8 md:w-1/2">
+                <h4 class="text-lg font-semibold">500+ Students Coached</h4>
+                <p class="text-sm text-gray-600">Reached a milestone of mentoring over 500 students worldwide across IB, IGCSE, GCSE, AP, A‑Level and CBSE boards.</p>
+              </div>
+            </div>
+            <!-- Timeline item 4 -->
+            <div class="timeline-item flex items-start md:items-center">
+              <div class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white flex-shrink-0">
+                2024
+              </div>
+              <div class="ml-4 md:ml-8 md:w-1/2">
+                <h4 class="text-lg font-semibold">Demonstrated Remarkable Results</h4>
+                <p class="text-sm text-gray-600">Students consistently improved their grades and confidence, with many achieving top scores and offers from prestigious universities.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Financial Learning Tools Section removed; link moved to Resources -->
+
+    <!-- About section relocated below -->
+
+    <!-- Why Choose Me Section -->
+    <section id="why" class="py-16 bg-gray-100">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          Why Choose Me
+        </h3>
+        <div class="max-w-5xl mx-auto space-y-6 text-lg text-gray-700">
+          <p><strong>7+ years of experience</strong>: I have guided more than 500 students worldwide across <span class="font-semibold">IB, IGCSE, GCSE, AP, A‑Level and CBSE</span> boards. Learners from grade&nbsp;5 through 12 consistently show remarkable growth in understanding, confidence and grades.</p>
+          <p><strong>One‑to‑one &amp; personalised</strong>: All sessions are strictly one‑to‑one, customised to each learner’s needs, pace and goals. I adjust lesson plans, pacing and even textbook selections based on the parent’s and student’s requirements.</p>
+          <p><strong>Interactive &amp; hands‑on</strong>: Using a digital writing tablet and annotation tools, students write, solve and explain directly on my screen. I provide real‑time feedback and use simulations and online tools to make abstract concepts tangible.</p>
+          <p><strong>Recorded &amp; reviewed</strong>: Every class is recorded for later review. Students receive comprehensive notes and assignments after each session, and parents get continuous progress updates and feedback.</p>
+        </div>
+      </div>
+    </section>
+    <!-- Interactive Maths & Physics demos removed as per latest update -->
+    <!-- Subjects & Curriculum -->
+    <section id="courses" class="py-16 bg-gray-100">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          Subjects &amp; Curriculum
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+            <h4 class="text-xl font-semibold mb-2">IB Programme</h4>
+            <p class="text-sm mb-2">
+              Focus on HL/SL Physics and Mathematics, including mechanics,
+              electricity & magnetism, calculus, statistics and mathematical
+              exploration. Guidance for IA and EE available.
+            </p>
+            <p class="text-xs text-gray-500">HL/SL | MYP | Diploma</p>
+            <p class="text-xs mt-2">
+              <a href="https://www.ibo.org/programmes/diploma-programme/curriculum/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">IB DP curriculum</a>
+              &nbsp;|&nbsp;
+              <a href="https://www.ibo.org/programmes/middle-years-programme/curriculum/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">MYP curriculum</a>
+            </p>
+          </div>
+          <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+            <h4 class="text-xl font-semibold mb-2">IGCSE / GCSE</h4>
+            <p class="text-sm mb-2">
+              Comprehensive coverage of extended and core maths & physics,
+              covering algebra, geometry, trigonometry, mechanics, optics,
+              energy and waves, preparing students for exams with past paper
+              practice.
+            </p>
+            <p class="text-xs text-gray-500">Cambridge | Edexcel</p>
+            <p class="text-xs mt-2">
+              <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physics-0625/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">IGCSE Physics</a>
+              &nbsp;|&nbsp;
+              <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-0580/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">IGCSE Maths</a>
+            </p>
+          </div>
+          <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+            <h4 class="text-xl font-semibold mb-2">CBSE / ISC</h4>
+            <p class="text-sm mb-2">
+              From grade 5 through class 12: number systems, algebra, geometry,
+              calculus, mechanics, electromagnetism, modern physics and exam
+              preparation for JEE & NEET.
+            </p>
+            <p class="text-xs text-gray-500">Grades 5–12</p>
+            <p class="text-xs mt-2">
+              <a href="https://cbseacademic.nic.in/curriculum.html" class="text-purple-600 hover:underline" target="_blank" rel="noopener">CBSE curriculum</a>
+              &nbsp;|&nbsp;
+              <a href="https://cisce.org/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">ISC/ICSE syllabus</a>
+            </p>
+          </div>
+          <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+            <h4 class="text-xl font-semibold mb-2">A‑Level / AP</h4>
+            <p class="text-sm mb-2">
+              In‑depth tutoring for A‑Level Maths & Physics and AP Calculus,
+              Mechanics, Electricity & Magnetism. Emphasis on problem solving,
+              reasoning and inquiry‑based learning.
+            </p>
+            <p class="text-xs text-gray-500">AS & A2 | AP 1, 2, C</p>
+            <p class="text-xs mt-2">
+              <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-physics-9702/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">A Level Physics</a>
+              &nbsp;|&nbsp;
+              <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/" class="text-purple-600 hover:underline" target="_blank" rel="noopener">A Level Maths</a>
+              <br />
+              <a href="https://apcentral.collegeboard.org/courses/ap-physics-1" class="text-purple-600 hover:underline" target="_blank" rel="noopener">AP Physics</a>
+              &nbsp;|&nbsp;
+              <a href="https://apcentral.collegeboard.org/courses/ap-calculus-ab" class="text-purple-600 hover:underline" target="_blank" rel="noopener">AP Calculus</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Class Formats & Pricing -->
+    <section id="formats" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          Class Formats &amp; Pricing
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="p-6 bg-gray-50 rounded-lg shadow">
+            <h4 class="text-xl font-semibold mb-2">One‑on‑One Sessions</h4>
+            <ul class="list-disc list-inside text-sm space-y-2">
+              <li>Personalised, one‑on‑one sessions conducted via Zoom or Meet.</li>
+              <li>Students write and solve directly on screen using a digital writing tablet, with real‑time feedback and annotation.</li>
+              <li>Classes are recorded for later revision; detailed notes and assignments are provided after each session.</li>
+              <li>Homework, chapter tests and continuous progress reports are shared regularly with parents.</li>
+              <li>Flexible scheduling and customised textbooks according to student requirements.</li>
+            </ul>
+          </div>
+          <div class="p-6 bg-gray-50 rounded-lg shadow">
+            <h4 class="text-xl font-semibold mb-2">Group Classes</h4>
+            <p class="text-sm mb-2">
+              Small group sessions (2–4 students) available for collaborative
+              learning. Same benefits as one‑on‑one with lower per‑student cost.
+            </p>
+            <p class="text-sm mb-2">
+              Demo classes are always free. Experience our teaching style before
+              committing.
+            </p>
+          </div>
+        </div>
+        <div class="text-center">
+          <h4 class="text-xl font-semibold mb-4">Pricing</h4>
+          <p class="text-lg font-bold text-purple-700">
+            ₹1,000 – ₹2,000 per hour
+          </p>
+          <p class="text-sm text-gray-600">
+            Rates vary depending on course level and format. Please contact us
+            for a personalised quote.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-16 bg-gray-100">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          What Parents & Students Say
+        </h3>
+        <div id="reviews-container" class="relative overflow-hidden max-w-3xl mx-auto">
+          <!-- Reviews will be injected here by JavaScript -->
+        </div>
+        <div class="mt-6 text-center">
+          <a
+            href="#contact"
+            class="inline-block px-6 py-3 rounded bg-purple-600 text-white font-semibold hover:bg-purple-700 transition"
+            >Book Your Free Demo Now</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Maths & Physics Demos Section -->
+    <section id="demo" class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          Interactive Maths &amp; Physics Demos
+        </h3>
+        <p class="text-center mb-10 text-gray-700">
+          Explore these mini interactive tools to see concepts in action. Adjust the sliders to observe how different parameters affect each graph or simulation.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Math Demo 1: Sine Wave Frequency -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-semibold mb-2">Sine Wave Frequency</h4>
+            <canvas id="math1Canvas" width="300" height="160" class="w-full mb-4 border rounded"></canvas>
+            <div class="flex items-center space-x-4">
+              <label for="math1Slider" class="text-sm font-medium text-gray-700">Frequency:</label>
+              <input id="math1Slider" type="range" min="1" max="5" step="0.1" value="1" class="flex-1" />
+            </div>
+          </div>
+          <!-- Math Demo 2: Quadratic Function -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-semibold mb-2">Quadratic Function</h4>
+            <canvas id="math2Canvas" width="300" height="160" class="w-full mb-4 border rounded"></canvas>
+            <div class="flex items-center space-x-4">
+              <label for="math2Slider" class="text-sm font-medium text-gray-700">Coefficient:</label>
+              <input id="math2Slider" type="range" min="0.5" max="2.0" step="0.1" value="1" class="flex-1" />
+            </div>
+          </div>
+          <!-- Math Demo 3: Exponential Growth -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-semibold mb-2">Exponential Growth</h4>
+            <canvas id="math3Canvas" width="300" height="160" class="w-full mb-4 border rounded"></canvas>
+            <div class="flex items-center space-x-4">
+              <label for="math3Slider" class="text-sm font-medium text-gray-700">Rate:</label>
+              <input id="math3Slider" type="range" min="0.5" max="2.0" step="0.1" value="1" class="flex-1" />
+            </div>
+          </div>
+          <!-- Physics Demo 1: Projectile Angle -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-semibold mb-2">Projectile Angle</h4>
+            <canvas id="phys1Canvas" width="300" height="160" class="w-full mb-4 border rounded"></canvas>
+            <div class="flex items-center space-x-4">
+              <label for="phys1Slider" class="text-sm font-medium text-gray-700">Angle (°):</label>
+              <input id="phys1Slider" type="range" min="20" max="70" step="1" value="45" class="flex-1" />
+            </div>
+          </div>
+          <!-- Physics Demo 2: Pendulum Length -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-semibold mb-2">Pendulum Length</h4>
+            <canvas id="phys2Canvas" width="300" height="160" class="w-full mb-4 border rounded"></canvas>
+            <div class="flex items-center space-x-4">
+              <label for="phys2Slider" class="text-sm font-medium text-gray-700">Length:</label>
+              <input id="phys2Slider" type="range" min="0.5" max="2.0" step="0.1" value="1" class="flex-1" />
+            </div>
+          </div>
+          <!-- Physics Demo 3: Wave Amplitude -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-semibold mb-2">Wave Amplitude</h4>
+            <canvas id="phys3Canvas" width="300" height="160" class="w-full mb-4 border rounded"></canvas>
+            <div class="flex items-center space-x-4">
+              <label for="phys3Slider" class="text-sm font-medium text-gray-700">Amplitude:</label>
+              <input id="phys3Slider" type="range" min="0.5" max="2.0" step="0.1" value="1" class="flex-1" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Teaching Tools & Resources Section -->
+    <section id="resources" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          Teaching Tools &amp; Resources
+        </h3>
+        <p class="text-center mb-6 text-gray-700">
+          Curated links to the simulations, question banks and AI helpers I use in classes. Expand each category to explore beginner to advanced resources.
+        </p>
+        <div class="space-y-6 max-w-4xl mx-auto">
+          <!-- Physics resources -->
+          <details class="bg-gray-50 p-4 rounded-lg shadow">
+            <summary class="font-semibold cursor-pointer text-lg">Physics Resources</summary>
+            <div class="mt-3">
+              <h4 class="font-semibold text-md mb-2">Foundation / Interactive Simulations</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://phet.colorado.edu/" class="text-purple-600 hover:underline" target="_blank">PhET Interactive Simulations</a> – broad physics coverage with beginner-friendly simulations.</li>
+                <li><a href="https://phet.colorado.edu/sims/html/trig-tour/latest/trig-tour_all.html" class="text-purple-600 hover:underline" target="_blank">PhET Trigonometry Tour</a> – interactive trig visualisation linking maths and physics.</li>
+                <li><a href="https://javalab.org/en/" class="text-purple-600 hover:underline" target="_blank">Javalab Physics Simulations</a> – Java-based conceptual visualisations.</li>
+                <li><a href="https://physicsmonster.org/content/simulation/index.html" class="text-purple-600 hover:underline" target="_blank">Physics Monster Simulations</a> – experiment-style interactive modules.</li>
+              </ul>
+              <h4 class="font-semibold text-md mt-4 mb-2">Curriculum &amp; Exam Prep</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://ibphysics.org/topic4/" class="text-purple-600 hover:underline" target="_blank">IB Physics Notes (Topic&nbsp;4)</a> – targeted IB curriculum content.</li>
+                <li><a href="https://www.savemyexams.com" class="text-purple-600 hover:underline" target="_blank">Save My Exams</a> – structured notes and exam-style questions for IB, IGCSE and A-level.</li>
+                <li><a href="https://www.physicsandmathstutor.com/" class="text-purple-600 hover:underline" target="_blank">Physics &amp; Maths Tutor</a> – revision notes, past papers and mark schemes.</li>
+                <li><a href="https://www.exam-mate.com/" class="text-purple-600 hover:underline" target="_blank">Exam‑Mate</a> – searchable IB/IGCSE/A‑level past papers.</li>
+                <li><a href="https://pastpaperpenguin.com/pure-3-topical-exam-questions-and-worked-solutions/" class="text-purple-600 hover:underline" target="_blank">Past Paper Penguin</a> – subject-wise questions and worked solutions.</li>
+              </ul>
+
+              <!-- Simulations & Games -->
+              <h4 class="font-semibold text-md mt-4 mb-2">Simulations &amp; Games</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="relativity.html" class="text-purple-600 hover:underline">Relativity Simulation</a> – interactive Minkowski diagram.</li>
+              </ul>
+            </div>
+          </details>
+          <!-- Mathematics resources -->
+          <details class="bg-gray-50 p-4 rounded-lg shadow">
+            <summary class="font-semibold cursor-pointer text-lg">Mathematics Resources</summary>
+            <div class="mt-3">
+              <h4 class="font-semibold text-md mb-2">Foundation / Concept Building</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://www.desmos.com/calculator" class="text-purple-600 hover:underline" target="_blank">Desmos Graphing Calculator</a> – visualise and explore functions interactively.</li>
+                <li><a href="https://phet.colorado.edu/sims/html/trig-tour/latest/trig-tour_all.html" class="text-purple-600 hover:underline" target="_blank">PhET Trigonometry Tour</a> – for geometry and trig explorations.</li>
+                <li><a href="https://rainforest.mathletics.com/" class="text-purple-600 hover:underline" target="_blank">Mathletics Rainforest</a> – gamified maths practice for younger learners.</li>
+              </ul>
+              <h4 class="font-semibold text-md mt-4 mb-2">Intermediate / Exam Focused</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://www.savemyexams.com" class="text-purple-600 hover:underline" target="_blank">Save My Exams</a> – practice questions and exams (IGCSE/IB/A‑level).</li>
+                <li><a href="https://www.physicsandmathstutor.com/" class="text-purple-600 hover:underline" target="_blank">Physics &amp; Maths Tutor</a> – maths past papers and topical notes.</li>
+                <li><a href="https://www.exam-mate.com/" class="text-purple-600 hover:underline" target="_blank">Exam‑Mate</a> – extensive question banks across boards.</li>
+              </ul>
+              <h4 class="font-semibold text-md mt-4 mb-2">Advanced / University Level</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://pastpaperpenguin.com/pure-3-topical-exam-questions-and-worked-solutions/" class="text-purple-600 hover:underline" target="_blank">Past Paper Penguin</a> – strong for advanced maths topics.</li>
+                <li><a href="https://www.overleaf.com" class="text-purple-600 hover:underline" target="_blank">Overleaf</a> – LaTeX document preparation for math-heavy assignments and research writing.</li>
+              </ul>
+
+              <h4 class="font-semibold text-md mt-4 mb-2">Simulations &amp; Games</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="analog-clock.html" class="text-purple-600 hover:underline">Analog Clock Lab</a> – interactive clock with teaching and practice modes.</li>
+                <li><a href="area-curve.html" class="text-purple-600 hover:underline">Area Under Curve Demo</a> – moving integral simulation.</li>
+              </ul>
+            </div>
+          </details>
+          <!-- General awareness and guidance resources -->
+          <details class="bg-gray-50 p-4 rounded-lg shadow">
+            <summary class="font-semibold cursor-pointer text-lg">General Awareness &amp; Guidance</summary>
+            <div class="mt-3">
+              <h4 class="font-semibold text-md mb-2">AI &amp; Research Tools</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://chatgpt.com/?model=gpt-5" class="text-purple-600 hover:underline" target="_blank">ChatGPT (GPT‑5)</a> – for explanations, content generation and student Q&amp;A.</li>
+                <li><a href="https://chat.deepseek.com/" class="text-purple-600 hover:underline" target="_blank">DeepSeek Chat</a> – alternative AI model for queries and problem solving.</li>
+                <li><a href="https://notebooklm.google.com/" class="text-purple-600 hover:underline" target="_blank">NotebookLM by Google</a> – organise and summarise reading materials and notes.</li>
+                <li><a href="https://aistudio.google.com/live" class="text-purple-600 hover:underline" target="_blank">Google AI Studio</a> – experiment with AI models.</li>
+              </ul>
+              <h4 class="font-semibold text-md mt-4 mb-2">Learning Platforms</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li><a href="https://home.edx.org/" class="text-purple-600 hover:underline" target="_blank">edX</a> – university-level structured online courses.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Games & Simulations Section (Games and Simulations separated for clarity) -->
+    <section id="games-simulations" class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">Games &amp; Simulations</h3>
+        <p class="text-center mb-8 text-gray-700">Discover our fun games and interactive simulations to reinforce learning.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Games category -->
+          <div class="p-6 bg-white rounded-lg shadow border">
+            <h4 class="text-2xl font-semibold text-center mb-4">Games</h4>
+            <div class="flex flex-col gap-4">
+              <a href="atomic.html" class="flex items-center justify-between p-4 rounded-lg border-2 border-green-600 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-lg transition">
+                <span class="text-5xl">🎮</span>
+                <div class="ml-4">
+                  <div class="text-lg font-semibold">Atomic Arcade</div>
+                  <div class="text-sm">Physics game exploring atomic structure</div>
+                </div>
+              </a>
+              <!-- Future games can be added here -->
+            </div>
+          </div>
+          <!-- Simulations category -->
+          <div class="p-6 bg-white rounded-lg shadow border">
+            <h4 class="text-2xl font-semibold text-center mb-4">Simulations</h4>
+            <div class="flex flex-col gap-4">
+              <a href="relativity.html" class="flex items-center justify-between p-4 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:shadow-lg transition">
+                <span class="text-5xl">⌛</span>
+                <div class="ml-4">
+                  <div class="text-lg font-semibold">Relativity Diagram</div>
+                  <div class="text-sm">Interactive Minkowski space-time</div>
+                </div>
+              </a>
+              <a href="analog-clock.html" class="flex items-center justify-between p-4 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:shadow-lg transition">
+                <span class="text-5xl">🕰️</span>
+                <div class="ml-4">
+                  <div class="text-lg font-semibold">Analog Clock</div>
+                  <div class="text-sm">Interactive time lab</div>
+                </div>
+              </a>
+              <a href="area-curve.html" class="flex items-center justify-between p-4 rounded-lg border-2 border-purple-600 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:shadow-lg transition">
+                <span class="text-5xl">📈</span>
+                <div class="ml-4">
+                  <div class="text-lg font-semibold">Area Under Curve</div>
+                  <div class="text-sm">Riemann sum exploration</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Availability Timetable Section -->
+    <section id="availability" class="py-12 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white p-6 rounded-lg shadow text-center">
+          <h4 class="text-2xl font-semibold text-purple-700 mb-2">Check My Availability</h4>
+          <p class="mb-4 text-gray-700">View up‑to‑date time slots and schedule your lesson at your convenience.</p>
+          <a
+            href="https://1drv.ms/x/c/185d36c88cd43272/EXIy1IzINl0ggBgQCgAAAAABGQXspzFwfjjOyJysKK7PlQ?e=miTJwp"
+            class="inline-block px-6 py-3 rounded bg-purple-600 text-white font-semibold hover:bg-purple-700 transition"
+            target="_blank"
+            rel="noopener noreferrer"
+            >View Timetable</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- About Ashish Section moved here -->
+    <section id="about" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          About Ashish
+        </h3>
+        <div class="flex flex-col md:flex-row items-center md:space-x-8">
+          <div class="md:w-1/2 mb-6 md:mb-0">
+            <h4 class="text-2xl font-semibold mb-4">My Story &amp; Passion</h4>
+            <p class="mb-4">
+              I'm Ashish, a deeply passionate mathematics and physics tutor. Over
+              the past seven years I've nurtured students' understanding across
+              levels—from primary to graduate. I currently work with both
+              national curricula (CBSE, ICSE, JEE, NEET) and international
+              programmes including IB, IGCSE, GCSE, AP and A‑Level. By understanding each
+              student's unique needs, I've positively impacted over 500+ students
+              and their families, witnessing remarkable academic growth firsthand.
+            </p>
+            <p class="mb-4">
+              Drawing from a solid foundation at Allen Career Institute and
+              three years of impactful online teaching, I blend subject
+              expertise with empathy. My success in the GATE and CTET
+              examinations reflects unwavering commitment to academic
+              excellence.
+            </p>
+            <p class="mb-4">
+              In my classes, I tailor instruction to each learner's pace and
+              style, fostering an environment where both academic and personal
+              growth flourish. Creativity is central in today’s educational landscape,
+              so my lessons encourage original thought, innovative problem solving
+              and reasoning.
+            </p>
+          </div>
+          <div class="md:w-1/2">
+            <h4 class="text-2xl font-semibold mb-4">Experience &amp; Credentials</h4>
+            <ul class="space-y-3 list-disc list-inside">
+              <li>
+                <strong>Teacher (2021–Present)</strong> – Allen Career Institute, Kota
+              </li>
+              <li>
+                <strong>M.Sc. Physics (2019–2021)</strong> – Kurukshetra University
+              </li>
+              <li>
+                <strong>4+ years of continuous international tutoring</strong> — I specialise in live, interactive sessions for IB, IGCSE, GCSE, AP, A‑Level and CBSE students worldwide.
+              </li>
+              <li>
+                Verified profile on <a href="https://www.teacheron.com/tutor/4Sih" class="text-purple-600 hover:underline" target="_blank" rel="noopener">TeacherOn</a> with <strong>29+ reviews</strong> from students and parents.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-gray-100">
+      <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-bold text-center text-purple-700 mb-8">
+          Get in Touch
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form
+            class="space-y-4 p-6 bg-white rounded-lg shadow"
+            onsubmit="event.preventDefault(); alert('Thank you! We will get back to you soon.');"
+          >
+            <div>
+              <label for="name" class="block font-semibold mb-1">Your Name</label>
+              <input
+                type="text"
+                id="name"
+                class="w-full border rounded px-3 py-2"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
+            <div>
+              <label for="email" class="block font-semibold mb-1">Your Email</label>
+              <input
+                type="email"
+                id="email"
+                class="w-full border rounded px-3 py-2"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div>
+              <label for="message" class="block font-semibold mb-1">Message</label>
+              <textarea
+                id="message"
+                class="w-full border rounded px-3 py-2"
+                rows="4"
+                placeholder="How can we help you?"
+                required
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="bg-purple-600 text-white px-6 py-3 rounded font-semibold hover:bg-purple-700 transition"
+            >
+              Submit
+            </button>
+          </form>
+          <div class="flex flex-col space-y-4 p-6 bg-white rounded-lg shadow">
+            <div>
+              <h4 class="text-xl font-semibold mb-2">Email</h4>
+              <a
+                href="mailto:ashishpachar27@gmail.com"
+                class="text-purple-600 hover:underline"
+                >ashishpachar27@gmail.com</a
+              >
+            </div>
+            <div>
+              <h4 class="text-xl font-semibold mb-2">WhatsApp</h4>
+              <a
+                href="https://wa.me/918684901516"
+                class="text-purple-600 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                >+91&nbsp;86849&nbsp;01516</a
+              >
+            </div>
+            <div>
+              <h4 class="text-xl font-semibold mb-2">Location</h4>
+              <p>Bangalore, India (online & worldwide)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-purple-700 text-white py-6">
+      <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+        &copy; <span id="year"></span> Demo Free Classes. All rights reserved.
+      </div>
+    </footer>
+
+    <!-- Inline script for reviews and dynamic elements -->
+    <script>
+      // Set current year in footer
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Review data – each entry has a quote and attribution
+      const reviews = [
+        {
+          quote:
+            'Ashish ignited my son\'s passion for Physics & Maths, breaking down complex concepts and boosting confidence. His patient approach inspires independent problem‑solving.',
+          attribution: 'Deepa – Parent, July 2024'
+        },
+        {
+          quote:
+            'Outstanding support in Physics, Chemistry and Maths. Ashish worked very hard to help my son overcome difficulties and excel.',
+          attribution: 'Divya Jayaprahasam – Parent, June 2024'
+        },
+        {
+          quote:
+            'Excellent IB Maths tutor! My son\'s confidence and problem‑solving skills improved noticeably thanks to his patient, structured teaching.',
+          attribution: 'Chaitali Chakraborty – Parent, June 2024'
+        },
+        {
+          quote:
+            'Patient and thorough tutor who tailors lessons to the student\'s needs. My son\'s confidence has grown—highly recommended.',
+          attribution: 'Tanu – Parent, May 2024'
+        },
+        {
+          quote:
+            'Good teacher – sincere, flexible and patient. My granddaughter\'s grades improved from a D to a B in six months.',
+          attribution: 'Mary Swarnalatha Rabindran – Grandparent, May 2024'
+        },
+        {
+          quote:
+            'Exceptional tutor! Provides deep conceptual understanding and ensures full mastery of each topic. Ideal for board and entrance exam prep.',
+          attribution: 'Yuvek – Student, Nov 2023'
+        },
+        {
+          quote:
+            'Knowledgeable and very patient – always goes the extra mile. My daughter loves Maths now and feels more confident.',
+          attribution: 'Glend Penueco – Parent, Nov 2023'
+        },
+        {
+          quote:
+            'Makes topics easy to understand. Ashish helped my son greatly in Maths – highly recommended!',
+          attribution: 'Siju – Parent, Nov 2023'
+        },
+        {
+          quote:
+            'Exceptional Physics tutor. My daughter\'s understanding and confidence in numericals has grown significantly.',
+          attribution: 'Jatin Agarwal – Parent, Oct 2023'
+        },
+        {
+          quote:
+            'Excellent teacher for Maths and Science. Uses multiple examples and fosters curiosity – highly recommended.',
+          attribution: 'Rajpal – Parent, Mar 2023'
+        },
+        {
+          quote:
+            'Great teacher for physics. Explains complex topics simply and keeps students engaged with questions. Both my daughters benefit immensely.',
+          attribution: 'Mohit – Parent, Nov 2022'
+        },
+        {
+          quote:
+            'Top tutor – patient, reliable and always on time. Assignments help reinforce learning.',
+          attribution: 'Nafisa Ali – Parent, Nov 2022'
+        },
+        {
+          quote:
+            'Excellent teacher that kids will love. Leads my primary school son in Maths, Science and English with engaging homework.',
+          attribution: 'Jack – Parent, Nov 2022'
+        },
+        {
+          quote:
+            'Good knowledge and methodical approach. After a demo we were confident, and my son is doing well in Maths.',
+          attribution: 'Asha – Parent, Oct 2022'
+        },
+        {
+          quote:
+            'Sound and patient teacher who tailors sessions to weak areas. My son\'s confidence in Science has grown markedly.',
+          attribution: 'Alok Kumar – Parent, Oct 2022'
+        },
+        {
+          quote:
+            'Excellent teaching method. My two kids in 6th and 10th grade thrive in Maths and Physics as he adapts to their learning speed.',
+          attribution: 'Srishti – Parent, Sep 2022'
+        },
+        {
+          quote:
+            'Highly recommended Maths teacher. Dedicated and helping my 10th grader become less reluctant toward Maths.',
+          attribution: 'Sarita Sreenivas – Parent, Aug 2022'
+        },
+        {
+          quote:
+            'Best explanation of physics. Gained confidence in NEET numericals and now prefer online classes over offline.',
+          attribution: 'Monika – Student, Jul 2022'
+        },
+        {
+          quote:
+            'Technically sound and manages sessions well. Even after one week my child feels safe and supported.',
+          attribution: 'Mukesh – Parent, Jun 2022'
+        },
+        {
+          quote:
+            'Interactive sessions. Explains concepts until kids understand and adapts to their knowledge level.',
+          attribution: 'Nalini – Parent, Jun 2022'
+        },
+        {
+          quote:
+            'The best mathematics teacher ever! Improved my performance dramatically and helped me top the class.',
+          attribution: 'Mamta – Student, May 2022'
+        },
+        {
+          quote:
+            'Excellent teaching skills. Makes difficult concepts easy and classes fun.',
+          attribution: 'Srishanth – Student, May 2022'
+        },
+        {
+          quote:
+            'His teaching is good. Uses special techniques to help students understand concepts.',
+          attribution: 'Aditya Reddy M – Student, May 2022'
+        },
+        {
+          quote:
+            'Best teaching method I have seen. Shows physics in real life and keeps students active with questions.',
+          attribution: 'Pankaj – Student, Apr 2022'
+        }
+      ];
+
+      // Render reviews as a simple slider
+      const container = document.getElementById('reviews-container');
+      let current = 0;
+
+      function renderReview(index) {
+        const { quote, attribution } = reviews[index];
+        container.innerHTML = `
+          <div class="px-10 py-12 bg-white rounded-2xl shadow-xl mx-auto max-w-4xl fade-enter">
+            <p class="mb-4"><span class="text-yellow-400 text-xl">★ ★ ★ ★ ★</span></p>
+            <p class="text-2xl md:text-3xl italic mb-8 leading-relaxed">“${quote}”</p>
+            <p class="text-right font-semibold text-purple-700 text-lg">— ${attribution}</p>
+          </div>
+        `;
+        // Trigger animation
+        requestAnimationFrame(() => {
+          const el = container.querySelector('.fade-enter');
+          el.classList.add('fade-enter-active');
+        });
+      }
+
+      function nextReview() {
+        current = (current + 1) % reviews.length;
+        renderReview(current);
+      }
+
+      // Initial render
+      renderReview(current);
+      // Cycle reviews every 6 seconds
+      setInterval(nextReview, 6000);
+
+      // IntersectionObserver for timeline items
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      const timelineObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      timelineItems.forEach((item) => timelineObserver.observe(item));
+
+      // Interactive Demos Setup
+      // Maths Demo 1: Sine Wave Frequency
+      const math1Canvas = document.getElementById('math1Canvas');
+      const math1Slider = document.getElementById('math1Slider');
+      if (math1Canvas && math1Slider) {
+        const ctx1 = math1Canvas.getContext('2d');
+        function drawMath1(freq) {
+          ctx1.clearRect(0, 0, math1Canvas.width, math1Canvas.height);
+          ctx1.beginPath();
+          const w = math1Canvas.width;
+          const h = math1Canvas.height;
+          for (let x = 0; x <= w; x++) {
+            const y = h / 2 + Math.sin((x / w) * freq * 2 * Math.PI) * 40;
+            if (x === 0) {
+              ctx1.moveTo(x, y);
+            } else {
+              ctx1.lineTo(x, y);
+            }
+          }
+          ctx1.strokeStyle = '#4C51BF';
+          ctx1.lineWidth = 2;
+          ctx1.stroke();
+        }
+        drawMath1(math1Slider.value);
+        math1Slider.addEventListener('input', () => drawMath1(math1Slider.value));
+      }
+
+      // Maths Demo 2: Quadratic Function
+      const math2Canvas = document.getElementById('math2Canvas');
+      const math2Slider = document.getElementById('math2Slider');
+      if (math2Canvas && math2Slider) {
+        const ctx2 = math2Canvas.getContext('2d');
+        function drawMath2(a) {
+          const w = math2Canvas.width;
+          const h = math2Canvas.height;
+          ctx2.clearRect(0, 0, w, h);
+          ctx2.beginPath();
+          for (let x = 0; x <= w; x++) {
+            const t = x / w; // 0..1
+            const yNorm = a * Math.pow(t - 0.5, 2) * 4;
+            const yPixel = h - (yNorm / 2) * h;
+            if (x === 0) {
+              ctx2.moveTo(x, yPixel);
+            } else {
+              ctx2.lineTo(x, yPixel);
+            }
+          }
+          ctx2.strokeStyle = '#4C51BF';
+          ctx2.lineWidth = 2;
+          ctx2.stroke();
+        }
+        drawMath2(math2Slider.value);
+        math2Slider.addEventListener('input', () => drawMath2(math2Slider.value));
+      }
+
+      // Maths Demo 3: Exponential Growth
+      const math3Canvas = document.getElementById('math3Canvas');
+      const math3Slider = document.getElementById('math3Slider');
+      if (math3Canvas && math3Slider) {
+        const ctx3 = math3Canvas.getContext('2d');
+        function drawMath3(rate) {
+          const w = math3Canvas.width;
+          const h = math3Canvas.height;
+          ctx3.clearRect(0, 0, w, h);
+          ctx3.beginPath();
+          for (let x = 0; x <= w; x++) {
+            const t = x / w;
+            const yNorm = (Math.exp(rate * t) - 1) / (Math.exp(rate) - 1);
+            const yPixel = h - yNorm * (h - 20);
+            if (x === 0) {
+              ctx3.moveTo(x, yPixel);
+            } else {
+              ctx3.lineTo(x, yPixel);
+            }
+          }
+          ctx3.strokeStyle = '#4C51BF';
+          ctx3.lineWidth = 2;
+          ctx3.stroke();
+        }
+        drawMath3(math3Slider.value);
+        math3Slider.addEventListener('input', () => drawMath3(math3Slider.value));
+      }
+
+      // Physics Demo 1: Projectile Motion
+      const phys1Canvas = document.getElementById('phys1Canvas');
+      const phys1Slider = document.getElementById('phys1Slider');
+      if (phys1Canvas && phys1Slider) {
+        const ctxp1 = phys1Canvas.getContext('2d');
+        function drawPhys1(angleDeg) {
+          const w = phys1Canvas.width;
+          const h = phys1Canvas.height;
+          const g = 9.81;
+          const v0 = 20;
+          const theta = (Math.PI / 180) * angleDeg;
+          const R = (v0 * v0 * Math.sin(2 * theta)) / g;
+          const H = (v0 * v0 * Math.pow(Math.sin(theta), 2)) / (2 * g);
+          ctxp1.clearRect(0, 0, w, h);
+          ctxp1.beginPath();
+          for (let px = 0; px <= w; px++) {
+            const xDist = (px / w) * R;
+            const yDist =
+              xDist * Math.tan(theta) -
+              (g * xDist * xDist) /
+                (2 * v0 * v0 * Math.pow(Math.cos(theta), 2));
+            const yPixel = h - (yDist / H) * (h - 20);
+            if (px === 0) {
+              ctxp1.moveTo(px, yPixel);
+            } else {
+              ctxp1.lineTo(px, yPixel);
+            }
+          }
+          ctxp1.strokeStyle = '#4C51BF';
+          ctxp1.lineWidth = 2;
+          ctxp1.stroke();
+        }
+        drawPhys1(phys1Slider.value);
+        phys1Slider.addEventListener('input', () => drawPhys1(phys1Slider.value));
+      }
+
+      // Physics Demo 2: Pendulum
+      const phys2Canvas = document.getElementById('phys2Canvas');
+      const phys2Slider = document.getElementById('phys2Slider');
+      if (phys2Canvas && phys2Slider) {
+        const ctxp2 = phys2Canvas.getContext('2d');
+        let pendLength = parseFloat(phys2Slider.value);
+        const amplitude = 0.4;
+        function drawPendulumFrame(time) {
+          const w = phys2Canvas.width;
+          const h = phys2Canvas.height;
+          const g = 9.81;
+          const freq = Math.sqrt(g / pendLength);
+          const angle = amplitude * Math.cos(freq * time);
+          const cx = w / 2;
+          const cy = 20;
+          const maxPixLen = (h - 40) * 0.8;
+          const lengthPix = maxPixLen * (pendLength / 2.0);
+          const bobX = cx + lengthPix * Math.sin(angle);
+          const bobY = cy + lengthPix * Math.cos(angle);
+          ctxp2.clearRect(0, 0, w, h);
+          ctxp2.beginPath();
+          ctxp2.moveTo(cx, cy);
+          ctxp2.lineTo(bobX, bobY);
+          ctxp2.strokeStyle = '#4C51BF';
+          ctxp2.lineWidth = 2;
+          ctxp2.stroke();
+          ctxp2.beginPath();
+          ctxp2.arc(cx, cy, 4, 0, 2 * Math.PI);
+          ctxp2.fillStyle = '#4C51BF';
+          ctxp2.fill();
+          ctxp2.beginPath();
+          ctxp2.arc(bobX, bobY, 8, 0, 2 * Math.PI);
+          ctxp2.fillStyle = '#4C51BF';
+          ctxp2.fill();
+        }
+        function updatePendulum() {
+          drawPendulumFrame(Date.now() / 1000);
+          requestAnimationFrame(updatePendulum);
+        }
+        updatePendulum();
+        phys2Slider.addEventListener('input', () => {
+          pendLength = parseFloat(phys2Slider.value);
+        });
+      }
+
+      // Physics Demo 3: Wave Amplitude
+      const phys3Canvas = document.getElementById('phys3Canvas');
+      const phys3Slider = document.getElementById('phys3Slider');
+      if (phys3Canvas && phys3Slider) {
+        const ctxp3 = phys3Canvas.getContext('2d');
+        function drawPhys3(ampl) {
+          const w = phys3Canvas.width;
+          const h = phys3Canvas.height;
+          ctxp3.clearRect(0, 0, w, h);
+          ctxp3.beginPath();
+          for (let x = 0; x <= w; x++) {
+            const y = h / 2 + Math.sin((x / w) * 4 * Math.PI) * 40 * ampl;
+            if (x === 0) {
+              ctxp3.moveTo(x, y);
+            } else {
+              ctxp3.lineTo(x, y);
+            }
+          }
+          ctxp3.strokeStyle = '#4C51BF';
+          ctxp3.lineWidth = 2;
+          ctxp3.stroke();
+        }
+        drawPhys3(phys3Slider.value);
+        phys3Slider.addEventListener('input', () => drawPhys3(phys3Slider.value));
+      }
+    </script>
+
+    <!-- Floating Action Buttons -->
+    <!-- Position the floating icons near the bottom right so they don't obscure content -->
+    <div class="fixed right-4 bottom-20 flex flex-col items-center space-y-4 z-50">
+      <!-- Availability button with tooltip -->
+      <a href="https://1drv.ms/x/c/185d36c88cd43272/EXIy1IzINl0ggBgQCgAAAAABGQXspzFwfjjOyJysKK7PlQ?e=miTJwp" target="_blank" rel="noopener noreferrer" class="relative group">
+        <span class="bg-purple-700 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-lg hover:bg-purple-600 transition">📅</span>
+        <span class="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-purple-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">View Timetable</span>
+      </a>
+      <!-- WhatsApp button with tooltip -->
+      <a href="https://wa.me/918684901516" target="_blank" rel="noopener noreferrer" class="relative group">
+        <span class="bg-green-500 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-lg hover:bg-green-600 transition">📞</span>
+        <span class="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">WhatsApp Me</span>
+      </a>
+    </div>
+  </body>
+</html>

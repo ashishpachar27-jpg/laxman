@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compound Interest Calculator – Demo Free Classes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX transformation -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="py-4 px-6">
+      <a href="index.html" class="text-purple-600 hover:underline">&larr; Back to Home</a>
+    </div>
+    <!-- Compound interest calculator implemented in vanilla JavaScript -->
+    <div class="max-w-4xl mx-auto p-6" id="calculator-container">
+      <h1 class="text-3xl font-bold mb-4">Compound Interest &amp; SIP Calculator</h1>
+      <p class="text-gray-700 mb-6">Play with initial amount, monthly contributions, interest rate and duration to see how your investment grows over time.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+          <label class="block mb-2 text-sm font-medium">Initial lump sum (₹)</label>
+          <input id="lumpSum" type="number" value="100000" min="0" step="1000" class="w-full p-2 rounded border" />
+        </div>
+        <div>
+          <label class="block mb-2 text-sm font-medium">Monthly contribution (₹)</label>
+          <input id="monthly" type="number" value="10000" min="0" step="500" class="w-full p-2 rounded border" />
+        </div>
+        <div>
+          <label class="block mb-2 text-sm font-medium">Annual return rate (%)</label>
+          <input id="rate" type="number" value="12" min="0" step="0.5" class="w-full p-2 rounded border" />
+        </div>
+        <div>
+          <label class="block mb-2 text-sm font-medium">Years</label>
+          <input id="years" type="number" value="10" min="1" step="1" class="w-full p-2 rounded border" />
+        </div>
+      </div>
+      <div class="mb-6">
+        <canvas id="chart" width="700" height="300" class="w-full border rounded"></canvas>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
+        <div class="p-4 bg-white rounded shadow border">
+          <div class="text-gray-500 text-xs">Total Invested</div>
+          <div id="totalInvested" class="text-xl font-semibold mt-1">—</div>
+        </div>
+        <div class="p-4 bg-white rounded shadow border">
+          <div class="text-gray-500 text-xs">Final Value</div>
+          <div id="finalValue" class="text-xl font-semibold mt-1">—</div>
+        </div>
+        <div class="p-4 bg-white rounded shadow border">
+          <div class="text-gray-500 text-xs">Net Gain</div>
+          <div id="netGain" class="text-xl font-semibold mt-1">—</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Simple compound interest calculator without external dependencies
+      function calculate() {
+        const lump = parseFloat(document.getElementById('lumpSum').value) || 0;
+        const monthly = parseFloat(document.getElementById('monthly').value) || 0;
+        const rate = parseFloat(document.getElementById('rate').value) || 0;
+        const years = parseFloat(document.getElementById('years').value) || 0;
+        const months = Math.round(years * 12);
+        const monthlyRate = rate / 100 / 12;
+        let value = lump;
+        let invested = lump;
+        const investedSeries = [invested];
+        const valueSeries = [value];
+        for (let i = 1; i <= months; i++) {
+          value *= (1 + monthlyRate);
+          value += monthly;
+          invested += monthly;
+          investedSeries.push(invested);
+          valueSeries.push(value);
+        }
+        // Update KPI elements
+        document.getElementById('totalInvested').textContent = formatCurrency(invested);
+        document.getElementById('finalValue').textContent = formatCurrency(value);
+        document.getElementById('netGain').textContent = formatCurrency(value - invested);
+        // Draw chart
+        drawChart(investedSeries, valueSeries);
+      }
+      function formatCurrency(n) {
+        return n.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+      }
+      function drawChart(investedSeries, valueSeries) {
+        const canvas = document.getElementById('chart');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        ctx.clearRect(0, 0, width, height);
+        const padding = 40;
+        const n = investedSeries.length - 1;
+        const maxY = Math.max(...valueSeries);
+        const x = (i) => padding + (i / n) * (width - 2 * padding);
+        const y = (val) => padding + (height - 2 * padding) * (1 - val / maxY);
+        // draw axes
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.lineWidth = 1;
+        // horizontal grid lines
+        const yTicks = 5;
+        for (let i = 0; i <= yTicks; i++) {
+          const yy = padding + (height - 2 * padding) * (i / yTicks);
+          ctx.beginPath();
+          ctx.moveTo(padding, yy);
+          ctx.lineTo(width - padding, yy);
+          ctx.stroke();
+          // y labels
+          const val = maxY * (1 - i / yTicks);
+          ctx.fillStyle = '#6b7280';
+          ctx.font = '10px sans-serif';
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(formatCompact(val), padding - 6, yy);
+        }
+        // x tick labels per year
+        const years = Math.max(1, Math.round(n / 12));
+        for (let i = 0; i <= years; i++) {
+          const idx = Math.round((i * n) / years);
+          const xx = x(idx);
+          ctx.beginPath();
+          ctx.moveTo(xx, padding);
+          ctx.lineTo(xx, height - padding);
+          ctx.stroke();
+          ctx.fillStyle = '#6b7280';
+          ctx.font = '10px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Y' + i, xx, height - padding + 6);
+        }
+        // draw invested line
+        ctx.strokeStyle = '#1f2937';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        investedSeries.forEach((val, i) => {
+          const xx = x(i);
+          const yy = y(val);
+          if (i === 0) ctx.moveTo(xx, yy);
+          else ctx.lineTo(xx, yy);
+        });
+        ctx.stroke();
+        // draw value line
+        ctx.strokeStyle = '#0ea5e9';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        valueSeries.forEach((val, i) => {
+          const xx = x(i);
+          const yy = y(val);
+          if (i === 0) ctx.moveTo(xx, yy);
+          else ctx.lineTo(xx, yy);
+        });
+        ctx.stroke();
+        // draw legend
+        ctx.fillStyle = '#1f2937';
+        ctx.fillRect(padding, padding - 30, 12, 12);
+        ctx.fillStyle = '#111827';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Invested', padding + 16, padding - 24);
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(padding + 100, padding - 30, 12, 12);
+        ctx.fillStyle = '#111827';
+        ctx.fillText('Value', padding + 116, padding - 24);
+      }
+      function formatCompact(num) {
+        if (!isFinite(num)) return '0';
+        const abs = Math.abs(num);
+        if (abs >= 1e7) return (num / 1e7).toFixed(1) + 'Cr';
+        if (abs >= 1e5) return (num / 1e5).toFixed(1) + 'L';
+        if (abs >= 1e3) return (num / 1e3).toFixed(1) + 'k';
+        return Math.round(num).toString();
+      }
+      // attach event listeners
+      ['lumpSum', 'monthly', 'rate', 'years'].forEach((id) => {
+        document.getElementById(id).addEventListener('input', calculate);
+      });
+      // initial calculation
+      calculate();
+    </script>
+  </body>
+</html>

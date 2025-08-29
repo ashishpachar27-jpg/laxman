@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relativity – Minkowski Space‑Time Diagram</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="py-4 px-6">
+      <a href="index.html" class="text-purple-600 hover:underline">&larr; Back to Home</a>
+    </div>
+    <div class="max-w-5xl mx-auto p-4">
+      <h1 class="text-2xl font-semibold mb-4">
+        Minkowski Space‑Time Diagram (ct vs x)
+      </h1>
+      <p class="text-sm mb-4 text-gray-700 leading-relaxed">
+        Drag the orange point (event E). Adjust velocity
+        <span class="font-mono">β = v/c</span> to tilt the moving frame axes
+        (<span class="font-mono">ct′</span> and
+        <span class="font-mono">x′</span>). The blue hyperbolae are invariant
+        curves: <span class="font-mono">(ct)² − x² = τ²</span> (timelike) and
+        <span class="font-mono">x² − (ct)² = σ²</span> (spacelike). The 45°
+        lines are light rays (<span class="font-mono">x = ±ct</span>).
+      </p>
+      <div class="flex flex-wrap gap-6 items-center mb-4 text-sm">
+        <label class="flex items-center gap-2">
+          β (v/c):
+          <input
+            type="range"
+            id="betaSlider"
+            min="-0.95"
+            max="0.95"
+            step="0.01"
+            value="0.6"
+            class="w-56"
+          />
+          <span id="betaValue" class="font-mono">0.60</span>
+        </label>
+        <label class="flex items-center gap-2">
+          τ:
+          <input
+            type="range"
+            id="tauSlider"
+            min="1"
+            max="9"
+            step="0.5"
+            value="6"
+            class="w-40"
+          />
+          <span id="tauValue" class="font-mono">6.0</span>
+        </label>
+        <label class="flex items-center gap-2">
+          σ:
+          <input
+            type="range"
+            id="sigmaSlider"
+            min="1"
+            max="9"
+            step="0.5"
+            value="6"
+            class="w-40"
+          />
+          <span id="sigmaValue" class="font-mono">6.0</span>
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <input type="checkbox" id="showSpacelike" checked />
+          Show spacelike hyperbola (x² − ct² = σ²)
+        </label>
+      </div>
+      <canvas
+        id="minkowskiCanvas"
+        width="760"
+        height="640"
+        class="w-full border rounded shadow"
+      ></canvas>
+      <div id="info" class="mt-4 text-sm text-gray-700"></div>
+    </div>
+    <script>
+      // Wrap everything in a load listener to ensure the DOM is ready before querying elements.
+      window.addEventListener('DOMContentLoaded', function () {
+        // Canvas and state initialization
+        const xmin = -10,
+          xmax = 10,
+          ctmin = -10,
+          ctmax = 10;
+        const canvas = document.getElementById('minkowskiCanvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+
+      // Helper functions to convert axis coordinates to pixel coordinates
+      function sx(x) {
+        return ((x - xmin) / (xmax - xmin)) * width;
+      }
+      function sy(ct) {
+        return height - ((ct - ctmin) / (ctmax - ctmin)) * height;
+      }
+
+      function clamp(val, min, max) {
+        return Math.max(min, Math.min(max, val));
+      }
+
+      // Parameters with initial values
+      let beta = 0.6;
+      let tau = 6;
+      let sigma = 6;
+      let showSpacelike = true;
+      let gamma =
+        1 /
+        Math.sqrt(
+          1 -
+            Math.min(Math.max(beta, -0.999), 0.999) *
+              Math.min(Math.max(beta, -0.999), 0.999)
+        );
+
+      // Event point (draggable)
+      let eventPt = { x: 4, ct: 6 };
+      let dragging = false;
+
+      // UI elements
+      const betaSlider = document.getElementById('betaSlider');
+      const tauSlider = document.getElementById('tauSlider');
+      const sigmaSlider = document.getElementById('sigmaSlider');
+      const showSpacelikeCheckbox = document.getElementById('showSpacelike');
+      const betaValueSpan = document.getElementById('betaValue');
+      const tauValueSpan = document.getElementById('tauValue');
+      const sigmaValueSpan = document.getElementById('sigmaValue');
+      const info = document.getElementById('info');
+
+      function updateGamma() {
+        gamma =
+          1 /
+          Math.sqrt(
+            1 -
+              Math.min(Math.max(beta, -0.999), 0.999) *
+                Math.min(Math.max(beta, -0.999), 0.999)
+          );
+      }
+
+      // Draw functions
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        // Draw background grid lines
+        ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+        ctx.lineWidth = 0.5;
+        // vertical grid
+        for (let gx = Math.ceil(xmin); gx <= xmax; gx++) {
+          ctx.beginPath();
+          ctx.moveTo(sx(gx), sy(ctmin));
+          ctx.lineTo(sx(gx), sy(ctmax));
+          ctx.stroke();
+        }
+        // horizontal grid
+        for (let gt = Math.ceil(ctmin); gt <= ctmax; gt++) {
+          ctx.beginPath();
+          ctx.moveTo(sx(xmin), sy(gt));
+          ctx.lineTo(sx(xmax), sy(gt));
+          ctx.stroke();
+        }
+        // Axes
+        ctx.strokeStyle = '#444';
+        ctx.lineWidth = 1.2;
+        // x-axis (ct=0)
+        ctx.beginPath();
+        ctx.moveTo(sx(xmin), sy(0));
+        ctx.lineTo(sx(xmax), sy(0));
+        ctx.stroke();
+        // ct-axis (x=0)
+        ctx.beginPath();
+        ctx.moveTo(sx(0), sy(ctmin));
+        ctx.lineTo(sx(0), sy(ctmax));
+        ctx.stroke();
+        // Light cone lines (x = ct and x = -ct)
+        ctx.strokeStyle = '#bbb';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(sx(xmin), sy(xmin));
+        ctx.lineTo(sx(xmax), sy(xmax));
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(sx(xmin), sy(-xmin));
+        ctx.lineTo(sx(xmax), sy(-xmax));
+        ctx.stroke();
+        // Moving frame axes (ct' and x') – lines with slopes determined by beta
+        if (Math.abs(beta) > 1e-3) {
+          // ct' axis: ct = (1/beta) x
+          ctx.strokeStyle = '#0077ff';
+          ctx.beginPath();
+          let first = true;
+          for (let i = 0; i <= 200; i++) {
+            const x = xmin + ((xmax - xmin) * i) / 200;
+            const ct = (1 / beta) * x;
+            if (ct >= ctmin && ct <= ctmax) {
+              if (first) {
+                ctx.moveTo(sx(x), sy(ct));
+                first = false;
+              } else {
+                ctx.lineTo(sx(x), sy(ct));
+              }
+            }
+          }
+          ctx.stroke();
+        }
+        // x' axis: ct = beta * x
+        ctx.strokeStyle = '#00cc88';
+        ctx.beginPath();
+        let first2 = true;
+        for (let i = 0; i <= 200; i++) {
+          const x = xmin + ((xmax - xmin) * i) / 200;
+          const ct = beta * x;
+          if (ct >= ctmin && ct <= ctmax) {
+            if (first2) {
+              ctx.moveTo(sx(x), sy(ct));
+              first2 = false;
+            } else {
+              ctx.lineTo(sx(x), sy(ct));
+            }
+          }
+        }
+        ctx.stroke();
+        // Hyperbolae: timelike future and past (ct^2 - x^2 = tau^2)
+        ctx.strokeStyle = '#0050b5';
+        ctx.lineWidth = 1.2;
+        drawHyperbola(tau, +1);
+        drawHyperbola(tau, -1);
+        // Hyperbola: spacelike (x^2 - ct^2 = sigma^2) if showSpacelike
+        if (showSpacelike) {
+          ctx.strokeStyle = '#b500b5';
+          drawSpacelike(sigma);
+        }
+        // Simultaneity line of moving frame through event: ct = beta * x + cIntercept
+        const ctPrimeEvent = gamma * (eventPt.ct - beta * eventPt.x);
+        const cIntercept = ctPrimeEvent / gamma;
+        ctx.strokeStyle = '#ffa500';
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        let firstSim = true;
+        for (let i = 0; i <= 200; i++) {
+          const x = xmin + ((xmax - xmin) * i) / 200;
+          const ct = beta * x + cIntercept;
+          if (ct >= ctmin && ct <= ctmax) {
+            if (firstSim) {
+              ctx.moveTo(sx(x), sy(ct));
+              firstSim = false;
+            } else {
+              ctx.lineTo(sx(x), sy(ct));
+            }
+          }
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // Draw event point E
+        ctx.fillStyle = '#ff7f0e';
+        const ex = sx(eventPt.x);
+        const ey = sy(eventPt.ct);
+        ctx.beginPath();
+        ctx.arc(ex, ey, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        // Draw classification text
+        const s2 = eventPt.ct * eventPt.ct - eventPt.x * eventPt.x;
+        let classification = '';
+        if (s2 > 1e-6) classification = 'timelike';
+        else if (s2 < -1e-6) classification = 'spacelike';
+        else classification = 'lightlike';
+        const properTime = s2 > 0 ? Math.sqrt(Math.max(0, s2)) : 0;
+        const properLength = s2 < 0 ? Math.sqrt(Math.max(0, -s2)) : 0;
+        info.innerHTML =
+          '<strong>Event E</strong>: (' +
+          eventPt.x.toFixed(2) +
+          ', ' +
+          eventPt.ct.toFixed(2) +
+          ')&nbsp;&nbsp; Classification: <span class="font-mono">' +
+          classification +
+          '</span>' +
+          (s2 > 0
+            ? ' &nbsp; Proper time τ = ' + properTime.toFixed(2)
+            : s2 < 0
+            ? ' &nbsp; Proper length σ = ' + properLength.toFixed(2)
+            : '');
+      }
+
+      function drawHyperbola(a, dir) {
+        ctx.beginPath();
+        let first = true;
+        const eMax =
+          Math.asinh(
+            Math.max(Math.abs(xmin), Math.abs(xmax)) / Math.max(a, 1e-6)
+          ) || 0;
+        for (let i = 0; i <= 200; i++) {
+          const eta = -eMax + (2 * eMax * i) / 200;
+          const x = a * Math.sinh(eta);
+          const ct = dir * a * Math.cosh(eta);
+          if (ct >= ctmin && ct <= ctmax) {
+            if (first) {
+              ctx.moveTo(sx(x), sy(ct));
+              first = false;
+            } else {
+              ctx.lineTo(sx(x), sy(ct));
+            }
+          }
+        }
+        ctx.stroke();
+      }
+
+      function drawSpacelike(b) {
+        ctx.beginPath();
+        let firstRight = true;
+        let firstLeft = true;
+        const eMax =
+          Math.acosh(
+            Math.max(Math.abs(xmin), Math.abs(xmax)) / Math.max(b, 1e-6) + 1
+          ) || 0;
+        for (let i = 0; i <= 200; i++) {
+          const eta = -eMax + (2 * eMax * i) / 200;
+          const xR = b * Math.cosh(eta);
+          const ctR = b * Math.sinh(eta);
+          if (ctR >= ctmin && ctR <= ctmax && xR >= xmin && xR <= xmax) {
+            if (firstRight) {
+              ctx.moveTo(sx(xR), sy(ctR));
+              firstRight = false;
+            } else {
+              ctx.lineTo(sx(xR), sy(ctR));
+            }
+          }
+        }
+        for (let i = 0; i <= 200; i++) {
+          const eta = -eMax + (2 * eMax * i) / 200;
+          const xL = -b * Math.cosh(eta);
+          const ctL = b * Math.sinh(eta);
+          if (ctL >= ctmin && ctL <= ctmax && xL >= xmin && xL <= xmax) {
+            if (firstLeft) {
+              ctx.moveTo(sx(xL), sy(ctL));
+              firstLeft = false;
+            } else {
+              ctx.lineTo(sx(xL), sy(ctL));
+            }
+          }
+        }
+        ctx.stroke();
+      }
+
+      // Slider listeners
+      betaSlider.addEventListener('input', () => {
+        beta = parseFloat(betaSlider.value);
+        betaValueSpan.textContent = beta.toFixed(2);
+        updateGamma();
+        draw();
+      });
+      tauSlider.addEventListener('input', () => {
+        tau = parseFloat(tauSlider.value);
+        tauValueSpan.textContent = tau.toFixed(1);
+        draw();
+      });
+      sigmaSlider.addEventListener('input', () => {
+        sigma = parseFloat(sigmaSlider.value);
+        sigmaValueSpan.textContent = sigma.toFixed(1);
+        draw();
+      });
+      showSpacelikeCheckbox.addEventListener('change', () => {
+        showSpacelike = showSpacelikeCheckbox.checked;
+        draw();
+      });
+
+      // Canvas dragging for event point
+      function screenToAxis(px, py) {
+        const x = xmin + (px / width) * (xmax - xmin);
+        const ct = ctmin + ((height - py) / height) * (ctmax - ctmin);
+        return { x, ct };
+      }
+      canvas.addEventListener('pointerdown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const px = e.clientX - rect.left;
+        const py = e.clientY - rect.top;
+        const currentScreenX = sx(eventPt.x);
+        const currentScreenY = sy(eventPt.ct);
+        const dist = Math.hypot(currentScreenX - px, currentScreenY - py);
+        if (dist < 10) {
+          dragging = true;
+        }
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const rect = canvas.getBoundingClientRect();
+        const px = e.clientX - rect.left;
+        const py = e.clientY - rect.top;
+        const axis = screenToAxis(px, py);
+        eventPt.x = clamp(axis.x, xmin, xmax);
+        eventPt.ct = clamp(axis.ct, ctmin, ctmax);
+        draw();
+      });
+      window.addEventListener('pointerup', () => {
+        dragging = false;
+      });
+
+        // Initial draw
+        draw();
+      });
+    </script>
+  </body>
+</html>
